@@ -18,8 +18,9 @@ export const createSafeAction = <TInput, TOutput>(
     const validationResult = schema.safeParse(data);
     if (!validationResult.success) {
       return {
-        fieldErrors: validationResult.error.flatten()
-          .fieldErrors as FieldErrors<TInput>,
+        fieldErrors: JSON.parse(
+          JSON.stringify(validationResult.error.flatten().fieldErrors)
+        ) as FieldErrors<TInput>,
       };
     }
 
