@@ -1,5 +1,6 @@
 "use client";
 
+import { copyList } from "@/actions/copy-list";
 import { deleteList } from "@/actions/delete-list";
 import FormSubmit from "@/components/form/form-submit";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAction } from "@/hooks/use-action";
 import { List } from "@/lib/generated/prisma/client";
 import { MoreHorizontal, X } from "lucide-react";
+import { useRef } from "react";
 import { toast } from "sonner";
 
 interface ListOptionsProps {
@@ -21,9 +23,22 @@ interface ListOptionsProps {
 }
 
 export default function ListOptions({ data, onAddCard }: ListOptionsProps) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
   const { execute: executeDelete } = useAction(deleteList, {
     onSuccess: (data) => {
       toast.success(`List "${data.title}" deleted`);
+      closeRef.current?.click();
+    },
+    onError: (error) => {
+      toast.error(error);
+    },
+  });
+
+  const { execute: executeCopy } = useAction(copyList, {
+    onSuccess: (data) => {
+      toast.success(`List "${data.title}" copied`);
+      closeRef.current?.click();
     },
     onError: (error) => {
       toast.error(error);
@@ -37,6 +52,13 @@ export default function ListOptions({ data, onAddCard }: ListOptionsProps) {
     executeDelete({ id, boardId });
   };
 
+  const onCopy = (formData: FormData) => {
+    const id = formData.get("id") as string;
+    const boardId = formData.get("boardId") as string;
+
+    executeCopy({ id, boardId });
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -48,7 +70,7 @@ export default function ListOptions({ data, onAddCard }: ListOptionsProps) {
         <div className="text-sm font-medium text-center text-neutral-600 pb-4">
           List actions
         </div>
-        <PopoverClose asChild>
+        <PopoverClose ref={closeRef} asChild>
           <Button
             className="h-auto w-auto p-2 absolute top-2 right-2 text-neutral-600"
             variant="ghost"
@@ -64,7 +86,7 @@ export default function ListOptions({ data, onAddCard }: ListOptionsProps) {
         >
           Add card...
         </Button>
-        <form>
+        <form action={onCopy}>
           <input hidden name="id" id="id" defaultValue={data.id} />
           <input
             hidden
