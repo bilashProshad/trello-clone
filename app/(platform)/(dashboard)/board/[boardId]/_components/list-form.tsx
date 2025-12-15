@@ -49,7 +49,8 @@ export default function ListForm() {
     }
   };
 
-  useEventListener("keydown", onKeyDown);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEventListener<any>("keydown", onKeyDown);
   useOnClickOutside(formRef as React.RefObject<HTMLElement>, disableEditing);
 
   const onSubmit = (formData: FormData) => {
