@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { useAction } from "@/hooks/use-action";
-import { List } from "@/lib/generated/prisma/client";
+import { List } from "@/lib/generated/prisma/models";
 import { MoreHorizontal, X } from "lucide-react";
 import { useRef } from "react";
 import { toast } from "sonner";
