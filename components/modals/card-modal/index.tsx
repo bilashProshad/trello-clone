@@ -12,6 +12,7 @@ import { CardWithList } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 import Header from "./header";
 import Description from "./description";
+import Actions from "./actions";
 
 export default function CardModal() {
   const { id, isOpen, onClose } = useCardModal();
@@ -38,6 +39,7 @@ export default function CardModal() {
               )}
             </div>
           </div>
+          {!cardData ? <Actions.Skeleton /> : <Actions data={cardData} />}
         </div>
       </DialogContent>
     </Dialog>
